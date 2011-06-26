@@ -1,0 +1,5 @@
+So one day I decided to write a raytracer. This is the result.
+
+In particular, I haven't heard of any raytracers that are optically correct, and that model or handle thin-film effects well. Much of my thin-film handling code will be based on "Thin Film Optical Filters" by Angus MacLeod.
+
+This is very much a work in progress.
