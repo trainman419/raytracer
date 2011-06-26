@@ -42,10 +42,19 @@ Point * Sphere::intersect(Ray * in) {
       return NULL;
    } else if( root == 0.0 ) {
       // one root; one intersection
+      return new Point(0,0,0);
    } else {
       // two roots; two intersections. pick the closer one
+      return new Point(0,0,0);
    }
    return NULL;
+}
+
+bool Sphere::collide(Ray * r) {
+   Point * c = intersect(r);
+   bool ret = c;
+   delete c;
+   return ret;
 }
 
 // get the angle of intersection with the surface

@@ -14,6 +14,7 @@ class World;
 
 class Object {
    public:
+      virtual bool collide(Ray *) = 0;
       virtual Ray * reflect(Ray *) = 0;
       virtual Ray * transmit(Ray *) = 0;
       virtual Ray * absorb(Ray *) = 0;
