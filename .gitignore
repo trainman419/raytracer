@@ -1,2 +1,4 @@
 main
 *.o
+all
+out.png

@@ -9,6 +9,7 @@
 #ifndef RAY_H
 #define RAY_H
 #include "spectrum.hpp"
+#include "point.hpp"
 
 class Ray {
    public:
