@@ -9,6 +9,6 @@ all: main
 	./main
 	touch all
 
-main: world.o objects.o png.o
+main: world.o objects.o png.o spectrum.o
 
 main.o: $(HEADERS)

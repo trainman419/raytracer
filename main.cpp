@@ -22,11 +22,18 @@
 int main( int argc, char ** argv) {
    Spectrum * s = new WhiteSpectrum();
 
-   RGB r = s->toRGB();
+   sRGB rgb = s->tosRGB();
 
    World * world = new World(10, 10, 10);
 
    Object * o = new Sphere(Point(0,10,0), 4);
+   o->addToWorld(world);
+   
+   o = new Sphere(Point(1, 10, 1), 2);
+   o->addToWorld(world);
+   
+   o = new Sphere(Point(-1, 10, -1), 2);
+   o->addToWorld(world);
 
    FILE * out = fopen("out.png", "wb");
 
@@ -45,9 +52,9 @@ int main( int argc, char ** argv) {
          Ray r(Point(x - w/2, 100, y - h/2));
 
          if( o->collide(&r) ) {
-            image[k + 0] =   0; // R
-            image[k + 1] = 255; // G
-            image[k + 2] =   0; // B
+            image[k + 0] = rgb.r; // R
+            image[k + 1] = rgb.g; // G
+            image[k + 2] = rgb.b; // B
          } else {
             image[k + 0] =   0; // R
             image[k + 1] =   0; // G
