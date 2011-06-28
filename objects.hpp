@@ -14,12 +14,10 @@
 class Sphere : public Object {
    public:
       Sphere(Point p, double rr) : c(p), r(rr) {}
-      virtual bool collide(Ray *);
+      virtual double collide(Ray *);
       virtual Ray * reflect(Ray *);
       virtual Ray * transmit(Ray *);
       virtual Ray * absorb(Ray *);
-
-      virtual void addToWorld(World *);
 
    private:
       Point c; // center of sphere
@@ -27,6 +25,10 @@ class Sphere : public Object {
 
       Point * intersect(Ray *);
       double angle(Ray *);
+
+      virtual Point bound_min();
+      virtual Point bound_max();
+      virtual bool occupy(Point);
 };
 
 #endif

@@ -14,14 +14,25 @@ class World;
 
 class Object {
    public:
-      virtual bool collide(Ray *) = 0;
+      // get the distance along the ray to the nearer collision point
+      //  or return Inf/NaN for no collision
+      virtual double collide(Ray *) = 0;
       virtual Ray * reflect(Ray *) = 0;
       virtual Ray * transmit(Ray *) = 0;
       virtual Ray * absorb(Ray *) = 0;
       // TODO diffuse
 
       // add this object to the world
-      virtual void addToWorld(World * w) = 0;
+      void addToWorld(World * w);
+
+   private:
+      // override this to provide minimum corner of bounding box
+      virtual Point bound_min() = 0;
+      // override this to provide maximum corner of bounding box
+      virtual Point bound_max() = 0;
+      // override this to test if the object's surface occupies a
+      //  particular voxel
+      virtual bool occupy(Point p) = 0;
 };
 
 #endif

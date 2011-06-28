@@ -4,7 +4,11 @@
  * Author: Austin Hendrix
  */
 
+#include <math.h>
+
 #include "world.hpp"
+
+#include <stdio.h>
 
 using namespace std;
 
@@ -57,4 +61,25 @@ sRGB World::trace(Ray * r) {
    y = start.y;
    z = start.z;
    list<Object*> * objects = w[x][y][z];
+
+   // major hax: test against every object in the world
+   Object * best = NULL;
+   double dist = INFINITY;
+   for( list<Object*>::iterator itr = all.begin(); itr != all.end(); itr++ ) {
+      double d = (*itr)->collide(r);
+      if( !isinf(d) && d < dist ) {
+         dist = d;
+         best = *itr;
+      }
+   }
+   sRGB ret(0, 0, 0);
+   if( best != NULL ) {
+      // TODO: fix mad hax
+      //printf("%lf\n", dist-0.07);
+      char c = 255*(1 - (40*(dist-0.07)));
+      ret.r = c;
+      ret.g = c;
+      ret.b = c;
+   }
+   return ret;
 }

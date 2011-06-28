@@ -4,6 +4,8 @@
  * Author: Austin Hendrix
  */
 
+#include <math.h>
+
 #include "objects.hpp"
 
 using namespace std;
@@ -50,11 +52,43 @@ Point * Sphere::intersect(Ray * in) {
    return NULL;
 }
 
-bool Sphere::collide(Ray * r) {
-   Point * c = intersect(r);
-   bool ret = c;
-   delete c;
-   return ret;
+double Sphere::collide(Ray * in) {
+   Point p1 = in->getStart(); // P1
+   Point d = in->getDir();    // P2 - P1
+   // c                       // P3
+   // From: http://paulbourke.net/geometry/sphereline/
+   // u*d + p1 = closest point to c
+   double a = d.x*d.x + d.y*d.y + d.z*d.z;
+   double b = 2 * (d.x*(p1.x-c.x) + d.y*(p1.y-c.y) + d.z*(p1.z-c.z) );
+   double cc = c.x*c.x + c.y*c.y + c.z*c.z + p1.x*p1.x + p1.y*p1.y + 
+      p1.z*p1.z - 2*(c.x*p1.x + c.y*p1.y + c.z*p1.z) - r*r;
+   double root = b*b - 4*a*cc;
+   // if root < 0; no intersection
+   if( root < 0 ) {
+      return INFINITY;
+   } else if( root == 0.0 ) {
+      // one root; one intersection
+      root = -b / (2*a);
+      if( root < 0 ) {
+         return INFINITY;
+      } else {
+         return root;
+      }
+   } else {
+      // two roots; two intersections. pick the closer one
+      double r1 = (-b + sqrt(root)) / (2*a);
+      double r2 = (-b - sqrt(root)) / (2*a);
+      if( r1 < 0 && r2 < 0 ) {
+         return INFINITY;
+      } else if( r1 < 0 ) {
+         return r2;
+      } else if( r2 < 0 ) {
+         return r1;
+      } else {
+         return min(r1, r2);
+      }
+   }
+   return NULL;
 }
 
 // get the angle of intersection with the surface
@@ -84,5 +118,15 @@ Ray * Sphere::absorb(Ray * in) {
    return new Ray();
 }
 
-void Sphere::addToWorld(World * w) {
+Point Sphere::bound_min() {
+   return Point(c.x-r, c.y-r, c.z-r);
+}
+
+Point Sphere::bound_max() {
+   return Point(c.x+r, c.y+r, c.z+r);
+}
+
+bool Sphere::occupy(Point p) {
+   // TODO: fix this to work properly
+   return true; // yeah... this'll be broken
 }

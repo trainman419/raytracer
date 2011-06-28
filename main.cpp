@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <math.h>
 
 #include "spectrum.hpp"
 #include "source.hpp"
@@ -41,13 +42,13 @@ int main( int argc, char ** argv) {
 
    World * world = new World(10, 10, 10);
 
-   Object * o = new Sphere(Point(0,10,0), 4);
+   Object * o = new Sphere(Point(0,10,0), 3);
    o->addToWorld(world);
    
-   o = new Sphere(Point(1, 10, 1), 2);
+   o = new Sphere(Point(2, 10, 2), 2);
    o->addToWorld(world);
    
-   o = new Sphere(Point(-1, 10, -1), 2);
+   o = new Sphere(Point(-2, 10, -2), 2);
    o->addToWorld(world);
 
    FILE * out = fopen("out.png", "wb");
@@ -62,19 +63,17 @@ int main( int argc, char ** argv) {
    }
    for( int y=0; y<h; y++ ) {
       for( int x=0; x<w; x++ ) {
-         int k = (y*w + x)*3;
-
+         // generate ray to cast
          Ray r(Point(x - w/2, 100, y - h/2));
 
-         if( o->collide(&r) ) {
-            image[k + 0] = rgb.r; // R
-            image[k + 1] = rgb.g; // G
-            image[k + 2] = rgb.b; // B
-         } else {
-            image[k + 0] =   0; // R
-            image[k + 1] =   0; // G
-            image[k + 2] =   0; // B
-         }
+         // cast ray and get rendered value
+         rgb = world->trace(&r);
+
+         // place RGB value into output image
+         int k = (y*w + x)*3;
+         image[k + 0] = rgb.r; // R
+         image[k + 1] = rgb.g; // G
+         image[k + 2] = rgb.b; // B
       }
    }
 

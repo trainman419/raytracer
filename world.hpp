@@ -34,13 +34,19 @@ class World {
       sRGB trace(Ray *);
       // minimum percentage a ray must have to propagate
       double min_ray;
+
+      friend class Object;
+      friend class Sphere;
+
    private:
       std::list<Object*> **** w;
+      std::list<Object*> all;
       int x;
       int y;
       int z;
 
       std::list<Source*> lights; // light sources
+
 };
 
 #endif
