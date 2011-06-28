@@ -54,29 +54,68 @@ void World::light(Source * s) {
 
 sRGB World::trace(Ray * r) {
    // trace a ray through the world
-   int x, y, z;
+   int sx, sy, sz;
    Point start = r->getStart();
+   // ray direction
+   Point u = r->getDir();
+   {
+      double l = r->length();
+      u.x /= l;
+      u.y /= l;
+      u.z /= l;
+   }
+   int dx = u.x>0 ? 1 : u.x<0 ? -1 : 0;
+   int dy = u.y>0 ? 1 : u.y<0 ? -1 : 0;
+   int dz = u.z>0 ? 1 : u.z<0 ? -1 : 0;
+
    // truncate down
-   x = start.x;
-   y = start.y;
-   z = start.z;
-   list<Object*> * objects = w[x][y][z];
+   sx = start.x;
+   sy = start.y;
+   sz = start.z;
+   list<Object*> * objects;
+   list<Object*>::iterator itr;
    Object * near = NULL;
+   double dist;
+   while( sz < x && sx >= 0 &&
+          sy < y && sy >= 0 &&
+          sz < z && sz >= 0 &&
+          near == NULL ) {
+      objects = w[sx][sy][sz];
+      dist = INFINITY;
+      for( itr = objects->begin(); itr != objects->end(); itr++ ) {
+         double d = (*itr)->collide(r);
+         if( !isinf(d) && d < dist ) {
+            dist = d;
+            near = *itr;
+         }
+      }
+      // if we didn't hit anything, propagate to next voxel
+      if( near == NULL ) {
+         // solve for where our ray intersects the next voxel-boundary plane
+         //  and pick the nearest point
+         //  (add a little so that we are guaranteed to round down properly)
+         double ts[3];
+         ts[1] = ((sx+dx) - start.x)/u.x;
+         ts[2] = ((sy+dy) - start.y)/u.y;
+         ts[3] = ((sz+dz) - start.z)/u.z;
+         double t = INFINITY;
+         // gcc ought to unroll this
+         for( int i=0; i<3; i++ ) {
+            // check that result is a number, for degenerate cases
+            if( isnormal(ts[i]) && ts[i] < t ) {
+               t = ts[i];
+            }
+         }
+         t += 0.0001;
 
-
-   // TODO: remove when proper code is working
-   // major hax: test against every object in the world
-   Object * best = NULL;
-   double dist = INFINITY;
-   for( list<Object*>::iterator itr = all.begin(); itr != all.end(); itr++ ) {
-      double d = (*itr)->collide(r);
-      if( !isinf(d) && d < dist ) {
-         dist = d;
-         best = *itr;
+         // increment our counters
+         sx = start.x + u.x*t;
+         sy = start.y + u.y*t;
+         sz = start.z + u.z*t;
       }
    }
    sRGB ret(0, 0, 0);
-   if( best != NULL ) {
+   if( near != NULL ) {
       // TODO: fix mad hax
       //printf("%lf\n", dist);
       char c = 255*(1 - (dist/20));

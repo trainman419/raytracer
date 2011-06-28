@@ -40,15 +40,15 @@ int main( int argc, char ** argv) {
    sRGB rgb = s->tosRGB();
    printf("D65->RGB %d %d %d\n", rgb.r, rgb.g, rgb.b);
 
-   World * world = new World(10, 10, 10);
+   World * world = new World(20, 20, 20);
 
-   Object * o = new Sphere(Point(0,10,0), 3);
+   Object * o = new Sphere(Point(10,10,10), 3);
    o->addToWorld(world);
    
-   o = new Sphere(Point(4, 15, 4), 2);
+   o = new Sphere(Point(14, 15, 14), 2);
    o->addToWorld(world);
    
-   o = new Sphere(Point(-4, 15, -4), 2);
+   o = new Sphere(Point(6, 15, 6), 2);
    o->addToWorld(world);
 
    FILE * out = fopen("out.png", "wb");
@@ -65,7 +65,7 @@ int main( int argc, char ** argv) {
       for( int x=0; x<w; x++ ) {
          // generate ray to cast
          //  depth here determines field-of-view
-         Ray r(Point(x - w/2, (w+h)/2, y - h/2));
+         Ray r(Point(10, 0, 10), Point(x - w/2, (w+h)/2, y - h/2));
 
          // cast ray and get rendered value
          rgb = world->trace(&r);

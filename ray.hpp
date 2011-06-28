@@ -8,6 +8,7 @@
 
 #ifndef RAY_H
 #define RAY_H
+#include <math.h>
 #include "spectrum.hpp"
 #include "point.hpp"
 
@@ -21,6 +22,10 @@ class Ray {
       Spectrum * getSpectrum() { return s; }
       Point getStart() { return start; }
       Point getDir() { return dir; }
+
+      double length() { return sqrt((dir.x-start.x)*(dir.x-start.x) +
+                                    (dir.y-start.y)*(dir.y-start.y) +
+                                    (dir.z-start.z)*(dir.z-start.z)); }
 
    private:
       Spectrum * s;
