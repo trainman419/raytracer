@@ -5,6 +5,11 @@
 
 #include <math.h>
 #include <fstream>
+#include <string>
+
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 #include "spectrum.hpp"
 
@@ -52,14 +57,26 @@ Observer * Observer::t;
 
 Observer::Observer() {
    // construct function table by reading file
-   ifstream in("CIE-1931-1nm.txt");
+   ifstream in("color/observers/CIE-1931-1nm.txt");
+#ifdef DEBUG
+   cout << "Initializing Observer" << endl;
+#endif
+   bool found = false;
+   string s;
+   while( in && !found ) {
+      getline(in, s);
+      found = s.find("Functions:") == 0;
+   }
    f line;
    int wvl;
-   while( !in.eof() ) {
+   while( in ) {
       in >> wvl;
       in >> line.x;
       in >> line.y; 
       in >> line.z;
+#ifdef DEBUG
+      cout << "wvl: " << wvl << " " << line.x << endl;
+#endif
       func[wvl] = line;
    }
 }

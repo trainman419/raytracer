@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "spectrum.hpp"
+#include "source.hpp"
 #include "ray.hpp"
 #include "object.hpp"
 #include "surface.hpp"
@@ -18,11 +19,25 @@
 // | /
 // |/
 // L------>x
+//
+// Rendering thoughts:
+//  cast rays from each light source, and reflect them off of the objects in
+//   the environment until magnitude is below some threshold
+//  cast a ray for each pixel in the final image, until it intsersects with an 
+//   object
+//
+//  reflection/diffusion: when a reflection from a source is diffuse, only
+//   propagate either directly reflected rays or rays with magnitude above
+//   some threshold
+//  when a ray intsersects an object, calculate the ray from that point to the
+//   light sources and compute diffuse reflection of light from that source?
 
 int main( int argc, char ** argv) {
-   Spectrum * s = new WhiteSpectrum();
+   //Spectrum * s = new Source("color/illuminants/CIE-D65.txt");
+   Spectrum * s = new Source("color/illuminants/CIE-C.txt");
 
    sRGB rgb = s->tosRGB();
+   printf("D65->RGB %d %d %d\n", rgb.r, rgb.g, rgb.b);
 
    World * world = new World(10, 10, 10);
 

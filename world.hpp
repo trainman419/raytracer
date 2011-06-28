@@ -13,6 +13,8 @@ class Object;
 
 #include <list>
 #include "object.hpp"
+#include "spectrum.hpp"
+#include "source.hpp"
 
 class World {
    public:
@@ -23,11 +25,22 @@ class World {
       World(int dx, int dy, int dz);
       ~World();
 
+      // apply a light to the world
+      void light(Source *);
+      // minimum intensity a light must have to propagate
+      double min_light;
+
+      // trace a ray through the world
+      sRGB trace(Ray *);
+      // minimum percentage a ray must have to propagate
+      double min_ray;
    private:
       std::list<Object*> **** w;
       int x;
       int y;
       int z;
+
+      std::list<Source*> lights; // light sources
 };
 
 #endif

@@ -22,6 +22,9 @@ World::World(int dx, int dy, int dz) {
    x = dx;
    y = dy;
    z = dz;
+
+   min_light = 1.0;  // arbitrary
+   min_ray = 0.1;    // 10%
 }
 
 World::~World() {
@@ -39,4 +42,19 @@ World::~World() {
 
 list<Object*> * World::getObjects(int x, int y, int z) {
    return w[x][y][z];
+}
+
+void World::light(Source * s) {
+   lights.push_back(s);
+}
+
+sRGB World::trace(Ray * r) {
+   // trace a ray through the world
+   int x, y, z;
+   Point start = r->getStart();
+   // truncate down
+   x = start.x;
+   y = start.y;
+   z = start.z;
+   list<Object*> * objects = w[x][y][z];
 }

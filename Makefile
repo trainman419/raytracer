@@ -5,10 +5,11 @@ LDFLAGS=-lpng
 
 HEADERS=spectrum.hpp ray.hpp object.hpp objects.hpp surface.hpp world.hpp png.hpp
 
-all: main
-	./main
-	touch all
+all: main out.png
 
-main: world.o objects.o png.o spectrum.o
+main: world.o objects.o png.o spectrum.o source.o
+
+out.png: main
+	./main
 
 main.o: $(HEADERS)
