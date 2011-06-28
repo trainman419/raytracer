@@ -1,7 +1,7 @@
 
 LINK.o=$(LINK.cpp)
 
-CFLAGS=
+CFLAGS=-O3
 CPPFLAGS=$(CFLAGS)
 LDFLAGS=-lpng
 
