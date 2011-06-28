@@ -19,6 +19,8 @@ class Sphere : public Object {
       virtual Ray * transmit(Ray *);
       virtual Ray * absorb(Ray *);
 
+      virtual Ray * normal(Point);
+
    private:
       Point c; // center of sphere
       double r; // radius of sphere
@@ -28,7 +30,7 @@ class Sphere : public Object {
 
       virtual Point bound_min();
       virtual Point bound_max();
-      virtual bool occupy(Point);
+      virtual bool occupy(int x, int y, int z);
 };
 
 #endif

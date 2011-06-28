@@ -61,7 +61,10 @@ sRGB World::trace(Ray * r) {
    y = start.y;
    z = start.z;
    list<Object*> * objects = w[x][y][z];
+   Object * near = NULL;
 
+
+   // TODO: remove when proper code is working
    // major hax: test against every object in the world
    Object * best = NULL;
    double dist = INFINITY;
@@ -75,8 +78,8 @@ sRGB World::trace(Ray * r) {
    sRGB ret(0, 0, 0);
    if( best != NULL ) {
       // TODO: fix mad hax
-      //printf("%lf\n", dist-0.07);
-      char c = 255*(1 - (40*(dist-0.07)));
+      //printf("%lf\n", dist);
+      char c = 255*(1 - (dist/20));
       ret.r = c;
       ret.g = c;
       ret.b = c;

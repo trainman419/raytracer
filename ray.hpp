@@ -15,6 +15,7 @@ class Ray {
    public:
       Ray() : start(0,0,0), dir(1,1,1) { s = new WhiteSpectrum(); }
       Ray(Point d) : start(0,0,0), dir(d) { s = new WhiteSpectrum(); }
+      Ray(Point a, Point d) : start(a), dir(d) { s = new WhiteSpectrum(); }
       ~Ray() { delete s; }
 
       Spectrum * getSpectrum() { return s; }

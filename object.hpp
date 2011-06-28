@@ -20,6 +20,9 @@ class Object {
       virtual Ray * reflect(Ray *) = 0;
       virtual Ray * transmit(Ray *) = 0;
       virtual Ray * absorb(Ray *) = 0;
+
+      // get normal to a point
+      virtual Ray * normal(Point) = 0;
       // TODO diffuse
 
       // add this object to the world
@@ -32,7 +35,7 @@ class Object {
       virtual Point bound_max() = 0;
       // override this to test if the object's surface occupies a
       //  particular voxel
-      virtual bool occupy(Point p) = 0;
+      virtual bool occupy(int x, int y, int z) = 0;
 };
 
 #endif

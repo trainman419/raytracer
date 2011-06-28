@@ -45,17 +45,17 @@ int main( int argc, char ** argv) {
    Object * o = new Sphere(Point(0,10,0), 3);
    o->addToWorld(world);
    
-   o = new Sphere(Point(2, 10, 2), 2);
+   o = new Sphere(Point(4, 15, 4), 2);
    o->addToWorld(world);
    
-   o = new Sphere(Point(-2, 10, -2), 2);
+   o = new Sphere(Point(-4, 15, -4), 2);
    o->addToWorld(world);
 
    FILE * out = fopen("out.png", "wb");
 
    // width, height and image buffer
-   int w = 100;
-   int h = 100;
+   int w = 200;
+   int h = w;
    char * image = (char*)malloc(sizeof(char)*w*h*3);
    if( !image ) {
       perror("malloc failed");
@@ -64,7 +64,8 @@ int main( int argc, char ** argv) {
    for( int y=0; y<h; y++ ) {
       for( int x=0; x<w; x++ ) {
          // generate ray to cast
-         Ray r(Point(x - w/2, 100, y - h/2));
+         //  depth here determines field-of-view
+         Ray r(Point(x - w/2, (w+h)/2, y - h/2));
 
          // cast ray and get rendered value
          rgb = world->trace(&r);

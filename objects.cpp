@@ -63,6 +63,9 @@ double Sphere::collide(Ray * in) {
    double cc = c.x*c.x + c.y*c.y + c.z*c.z + p1.x*p1.x + p1.y*p1.y + 
       p1.z*p1.z - 2*(c.x*p1.x + c.y*p1.y + c.z*p1.z) - r*r;
    double root = b*b - 4*a*cc;
+
+   // length of input ray
+   double dist = sqrt(d.x*d.x + d.y*d.y + d.z*d.z);
    // if root < 0; no intersection
    if( root < 0 ) {
       return INFINITY;
@@ -72,7 +75,7 @@ double Sphere::collide(Ray * in) {
       if( root < 0 ) {
          return INFINITY;
       } else {
-         return root;
+         return root*dist;
       }
    } else {
       // two roots; two intersections. pick the closer one
@@ -81,14 +84,13 @@ double Sphere::collide(Ray * in) {
       if( r1 < 0 && r2 < 0 ) {
          return INFINITY;
       } else if( r1 < 0 ) {
-         return r2;
+         return r2*dist;
       } else if( r2 < 0 ) {
-         return r1;
+         return r1*dist;
       } else {
-         return min(r1, r2);
+         return min(r1, r2)*dist;
       }
    }
-   return NULL;
 }
 
 // get the angle of intersection with the surface
@@ -126,7 +128,24 @@ Point Sphere::bound_max() {
    return Point(c.x+r, c.y+r, c.z+r);
 }
 
-bool Sphere::occupy(Point p) {
+bool Sphere::occupy(int x, int y, int z) {
+   int inside = 0;
    // TODO: fix this to work properly
-   return true; // yeah... this'll be broken
+   for( int i=x; i<x+2; i++ ) {
+      for( int j=y; j<y+2; j++ ) {
+         for( int k=z; k<z+2; k++ ) {
+            double d = sqrt((i-c.x)*(i-c.x) +(j-c.y)*(j-c.y) +(k-c.z)*(k-c.z));
+            if( d < r ) {
+               inside++;
+            }
+         }
+      }
+   }
+   // if all points are not inside or outside our sphere, the surface passes
+   //  through this voxel
+   return !(inside == 0 || inside == 8 );
+}
+
+Ray * Sphere::normal(Point p) {
+   return new Ray(c, p);
 }
