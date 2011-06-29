@@ -12,6 +12,8 @@
 #include "spectrum.hpp"
 #include "point.hpp"
 
+#include <stdio.h>
+
 class Ray {
    public:
       Ray() : start(0,0,0), dir(1,1,1) { s = new WhiteSpectrum(); }
@@ -23,9 +25,19 @@ class Ray {
       Point getStart() { return start; }
       Point getDir() { return dir; }
 
-      double length() { return sqrt((dir.x-start.x)*(dir.x-start.x) +
-                                    (dir.y-start.y)*(dir.y-start.y) +
-                                    (dir.z-start.z)*(dir.z-start.z)); }
+      double length() const { return sqrt(dir.x*dir.x +
+                                    dir.y*dir.y +
+                                    dir.z*dir.z); }
+
+      double dot(const Ray &o) const { return dir.x * o.dir.x + 
+                                       dir.y * o.dir.y +
+                                       dir.z * o.dir.z; }
+
+      double angle(const Ray &o) const { 
+         return acos(dot(o) / (length() * o.length())); }
+
+      void print() { printf("(%lf, %lf, %lf) (%lf, %lf, %lf)\n",
+            start.x, start.y, start.z, dir.x, dir.y, dir.z); }
 
    private:
       Spectrum * s;

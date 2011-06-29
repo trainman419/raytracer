@@ -54,7 +54,7 @@ int main( int argc, char ** argv) {
    FILE * out = fopen("out.png", "wb");
 
    // width, height and image buffer
-   int w = 200;
+   int w = 200; // do not make this 10
    int h = w;
    char * image = (char*)malloc(sizeof(char)*w*h*3);
    if( !image ) {
@@ -63,6 +63,7 @@ int main( int argc, char ** argv) {
    }
    for( int y=0; y<h; y++ ) {
       for( int x=0; x<w; x++ ) {
+         printf("Rendering (%d, %d)\n", x, y);
          // generate ray to cast
          //  depth here determines field-of-view
          Ray r(Point(10, 0, 10), Point(x - w/2, (w+h)/2, y - h/2));

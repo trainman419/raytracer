@@ -147,5 +147,5 @@ bool Sphere::occupy(int x, int y, int z) {
 }
 
 Ray * Sphere::normal(Point p) {
-   return new Ray(c, p);
+   return new Ray(c, Point(p.x-c.x, p.y-c.y, p.z-c.z));
 }

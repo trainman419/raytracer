@@ -116,9 +116,14 @@ sRGB World::trace(Ray * r) {
    }
    sRGB ret(0, 0, 0);
    if( near != NULL ) {
+      Point intersect(start.x + u.x*dist, 
+                      start.y + u.y*dist, 
+                      start.z + u.z*dist);
+      Ray * normal = near->normal(intersect);
+      double theta = normal->angle(*r);
+      delete normal;
       // TODO: fix mad hax
-      //printf("%lf\n", dist);
-      char c = 255*(1 - (dist/20));
+      char c = 255 * fabs(theta/(M_PI/2));
       ret.r = c;
       ret.g = c;
       ret.b = c;
