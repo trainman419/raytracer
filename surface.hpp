@@ -9,11 +9,17 @@
 #ifndef SURFACE_H
 #define SUFRACE_H
 
+#include "spectrum.hpp"
+#include "optics.hpp"
+
+// TODO: re-do this based on reflected/transmitted spectra and incidence angle
+//  rather than rays
+
 class Surface {
    public:
-      virtual Ray * reflect(Ray *) = 0;
-      virtual Ray * transmit(Ray *) = 0;
-      virtual Ray * absorb(Ray *) = 0;
+      virtual Spectrum * reflect(double) = 0;
+      virtual Spectrum * transmit(double) = 0;
+      virtual Spectrum * absorb(double) = 0;
       // TODO: diffusion
 };
 

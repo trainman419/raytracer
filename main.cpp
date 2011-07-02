@@ -10,6 +10,7 @@
 #include "objects.hpp"
 #include "world.hpp"
 #include "png.hpp"
+#include "optics.hpp"
 
 // coordinates:
 //
@@ -35,12 +36,14 @@
 
 int main( int argc, char ** argv) {
    //Spectrum * s = new Source("color/illuminants/CIE-D65.txt");
-   Spectrum * s = new Source("color/illuminants/CIE-C.txt");
+   Source * s = new Source("color/illuminants/CIE-C.txt");
 
    sRGB rgb = s->tosRGB();
    printf("D65->RGB %d %d %d\n", rgb.r, rgb.g, rgb.b);
 
    World * world = new World(20, 20, 20);
+
+   world->light(s);
 
    Object * o = new Sphere(Point(10,10,10), 3);
    o->addToWorld(world);
@@ -63,7 +66,7 @@ int main( int argc, char ** argv) {
    }
    for( int y=0; y<h; y++ ) {
       for( int x=0; x<w; x++ ) {
-         printf("Rendering (%d, %d)\n", x, y);
+         //printf("Rendering (%d, %d)\n", x, y);
          // generate ray to cast
          //  depth here determines field-of-view
          Ray r(Point(10, 0, 10), Point(x - w/2, (w+h)/2, y - h/2));

@@ -17,9 +17,9 @@ class Object {
       // get the distance along the ray to the nearer collision point
       //  or return Inf/NaN for no collision
       virtual double collide(Ray *) = 0;
-      virtual Ray * reflect(Ray *) = 0;
-      virtual Ray * transmit(Ray *) = 0;
-      virtual Ray * absorb(Ray *) = 0;
+      virtual Spectrum * reflect(Spectrum *, double) = 0;
+      virtual Spectrum * transmit(Spectrum *, double) = 0;
+      virtual Spectrum * absorb(Spectrum *, double) = 0;
 
       // get normal to a point
       virtual Ray * normal(Point) = 0;

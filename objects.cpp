@@ -98,26 +98,16 @@ double angle(Ray *) {
 }
 
 // get the reflected ray off of this sphere
-Ray * Sphere::reflect(Ray * in) {
-   Point * i = intersect(in);
-   if( i ) {
-      // intersects with sphere. get angle, do math, etc
-   }
-   return new Ray();
+Spectrum * Sphere::reflect(Spectrum * in, double theta) {
+   return new Spectrum(in);
 }
 
-Ray * Sphere::transmit(Ray * in) {
-   Point * i = intersect(in);
-   if( i ) {
-   }
-   return new Ray();
+Spectrum * Sphere::transmit(Spectrum * in, double theta) {
+   return new Spectrum(in);
 }
 
-Ray * Sphere::absorb(Ray * in) {
-   Point * i = intersect(in);
-   if( i ) {
-   }
-   return new Ray();
+Spectrum * Sphere::absorb(Spectrum * in, double theta) {
+   return new Spectrum(in);
 }
 
 Point Sphere::bound_min() {

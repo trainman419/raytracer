@@ -15,9 +15,9 @@ class Sphere : public Object {
    public:
       Sphere(Point p, double rr) : c(p), r(rr) {}
       virtual double collide(Ray *);
-      virtual Ray * reflect(Ray *);
-      virtual Ray * transmit(Ray *);
-      virtual Ray * absorb(Ray *);
+      virtual Spectrum * reflect(Spectrum *, double);
+      virtual Spectrum * transmit(Spectrum *, double);
+      virtual Spectrum * absorb(Spectrum *, double);
 
       virtual Ray * normal(Point);
 

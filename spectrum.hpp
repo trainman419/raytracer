@@ -30,9 +30,13 @@ struct sRGB {
 // base spectrum class
 class Spectrum {
    public:
-
       // convert to sRGB color space
       virtual sRGB tosRGB();
+
+      Spectrum() { I[300] = 1.0; I[830] = 1.0; }
+      Spectrum(std::map<int, double> &i) : I(i) {}
+      Spectrum(Spectrum & s) : I(s.I) {}
+      Spectrum(Spectrum * s) : I(s->I) {}
 
    protected:
       // spectral power distribution

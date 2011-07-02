@@ -1,12 +1,12 @@
 
 LINK.o=$(LINK.cpp)
 
-CFLAGS=-O3
+CFLAGS=-g
 CPPFLAGS=$(CFLAGS)
 LDFLAGS=-lpng
 
-HEADERS=spectrum.hpp ray.hpp object.hpp objects.hpp surface.hpp world.hpp png.hpp
-OBJS=world.o object.o objects.o png.o spectrum.o source.o
+HEADERS=spectrum.hpp ray.hpp object.hpp objects.hpp surface.hpp world.hpp png.hpp optics.hpp
+OBJS=world.o object.o objects.o png.o spectrum.o source.o optics.o
 
 all: main out.png
 

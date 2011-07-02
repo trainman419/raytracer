@@ -95,9 +95,9 @@ sRGB World::trace(Ray * r) {
          //  and pick the nearest point
          //  (add a little so that we are guaranteed to round down properly)
          double ts[3];
-         ts[1] = ((sx+dx) - start.x)/u.x;
-         ts[2] = ((sy+dy) - start.y)/u.y;
-         ts[3] = ((sz+dz) - start.z)/u.z;
+         ts[0] = ((sx+dx) - start.x)/u.x;
+         ts[1] = ((sy+dy) - start.y)/u.y;
+         ts[2] = ((sz+dz) - start.z)/u.z;
          double t = INFINITY;
          // gcc ought to unroll this
          for( int i=0; i<3; i++ ) {
@@ -109,9 +109,9 @@ sRGB World::trace(Ray * r) {
          t += 0.0001;
 
          // increment our counters
-         sx = start.x + u.x*t;
-         sy = start.y + u.y*t;
-         sz = start.z + u.z*t;
+         sx = (start.x + u.x*t);
+         sy = (start.y + u.y*t);
+         sz = (start.z + u.z*t);
       }
    }
    sRGB ret(0, 0, 0);
@@ -121,12 +121,21 @@ sRGB World::trace(Ray * r) {
                       start.z + u.z*dist);
       Ray * normal = near->normal(intersect);
       double theta = normal->angle(*r);
+      // reverse angle since rays are pointing in opposite directions
+      theta = M_PI - theta;
       delete normal;
+      /* // sanity check
+      if( fabs(theta) > (M_PI/2) ) {
+         printf("Theta > pi: %lf\n", fabs(theta/(M_PI/2)));
+      } */
       // TODO: fix mad hax
-      char c = 255 * fabs(theta/(M_PI/2));
+      char c = 255 * (1.0 - fabs(theta/(M_PI/2)));
       ret.r = c;
       ret.g = c;
       ret.b = c;
+      Spectrum * r = near->reflect(lights.front(), theta);
+      ret = r->tosRGB();
+      delete r;
    }
    return ret;
 }

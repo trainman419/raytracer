@@ -15,6 +15,7 @@ class Object;
 #include "object.hpp"
 #include "spectrum.hpp"
 #include "source.hpp"
+#include "optics.hpp"
 
 class World {
    public:
