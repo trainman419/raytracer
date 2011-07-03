@@ -5,6 +5,7 @@
  */
 
 #include <math.h>
+#include <assert.h>
 
 #include "objects.hpp"
 
@@ -99,16 +100,28 @@ double angle(Ray *) {
 
 // get the reflected ray off of this sphere
 Spectrum * Sphere::reflect(Spectrum * in, double theta) {
-   return new Spectrum(in);
+   if( film ) {
+//      printf("reflecting ray off film at angle %lf\n", theta);
+      return film->reflect(in, theta);
+   } else {
+      return new Spectrum(in);
+   }
 }
 
+/*
 Spectrum * Sphere::transmit(Spectrum * in, double theta) {
-   return new Spectrum(in);
+   assert(false);
+   if( film )
+      return film->transmit(in, theta);
+   else
+      return in;
 }
 
 Spectrum * Sphere::absorb(Spectrum * in, double theta) {
+   assert(false);
    return new Spectrum(in);
 }
+*/
 
 Point Sphere::bound_min() {
    return Point(c.x-r, c.y-r, c.z-r);

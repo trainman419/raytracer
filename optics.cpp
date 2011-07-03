@@ -9,6 +9,8 @@
 #include "optics.hpp"
 #include <math.h>
 
+using namespace std;
+
 #define NM_TO_M(a) (a / 1000000000.0)
 
 LayerMatrix LayerMatrix::operator*(const LayerMatrix o) const {
@@ -19,20 +21,34 @@ LayerMatrix LayerMatrix::operator*(const LayerMatrix o) const {
 }
 
 // wavelength in nm
-LayerMatrix Layer::operator()(int wvl) {
-   double k = 2 * M_PI / (NM_TO_M(wvl)/idx(wvl));
+LayerMatrix Layer::operator()(const double wvl) const {
+   double k = 2 * M_PI / (NM_TO_M(wvl)/(*idx)(wvl));
    // TODO: adjust thickness for angle of incidence and index?
    double L = NM_TO_M(thickness);
    return LayerMatrix( cos(k*L)   , sin(k*L) / k,
                        -k*sin(k*L), cos(k*L)      );
 }
 
-LayerMatrix Film::matrix(double theta, int wvl) {
+LayerMatrix Film::matrix(double theta, double wvl) {
+   LayerMatrix ret(0, 0, 0, 0);
+   list<Layer>::const_iterator itr = layers.begin();
+   ret = (*itr)(wvl);
+   for( itr++; itr != layers.end(); itr++ ) {
+      ret = (*itr)(wvl) * ret;
+   }
+   return ret;
 }
 
 Spectrum * Film::transmit(Spectrum * in, double angle) {
-   Spectrum * out = new Spectrum();
+   Spectrum * ret = new Spectrum(in);
+   Spectrum::const_iterator itr;
+   for( itr = in->begin(); itr != in->end(); ++itr ) {
+      LayerMatrix m = matrix(angle, *itr);
+   }
+   return ret;
 }
 
 Spectrum * Film::reflect(Spectrum * in, double angle) {
+   Spectrum * ret = new Spectrum(in);
+   return ret;
 }

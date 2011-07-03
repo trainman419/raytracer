@@ -15,7 +15,7 @@
 
 using namespace std;
 
-Source::Source(string fname) {
+FileSource::FileSource(string fname) {
    ifstream in(fname.c_str());
    if( !in ) {
       perror(("Failed to open " + fname).c_str());
@@ -33,7 +33,7 @@ Source::Source(string fname) {
       double i;
       while( in ) {
          in >> wvl >> i;
-         I[wvl] = i;
+         I.addPoint(wvl, i);
 #ifdef DEBUG
          cout << "wvl: " << wvl << ", I: " << i << endl;
 #endif

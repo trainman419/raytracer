@@ -16,15 +16,15 @@
 using namespace std;
 
 sRGB Spectrum::tosRGB() {
-   map<int, double>::iterator itr;
+   double itr;
    double X = 0.0;
    double Y = 0.0;
    double Z = 0.0;
-   for( itr = I.begin(); itr != I.end(); itr++ ) {
-      Observer::f func = Observer::bar2(itr->first);
-      X += func.x * itr->second;
-      Y += func.y * itr->second;
-      Z += func.z * itr->second;
+   for( itr = I.min(); itr <= I.max(); itr += INC ) {
+      Observer::f func = Observer::bar2(itr);
+      X += func.x * I(itr);
+      Y += func.y * I(itr);
+      Z += func.z * I(itr);
    }
 
    // if any values greater than 1.0, normalize

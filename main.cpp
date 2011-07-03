@@ -35,17 +35,27 @@
 //   light sources and compute diffuse reflection of light from that source?
 
 int main( int argc, char ** argv) {
-   //Spectrum * s = new Source("color/illuminants/CIE-D65.txt");
-   Source * s = new Source("color/illuminants/CIE-C.txt");
+   //Source * s = new FileSource("color/illuminants/CIE-D65.txt");
+   Source * s = new FileSource("color/illuminants/CIE-C.txt");
+   //Source * s = new FileSource("color/illuminants/CIE-A-1nm.txt");
+   //Source * s = new WhiteSource();
 
    sRGB rgb = s->tosRGB();
    printf("D65->RGB %d %d %d\n", rgb.r, rgb.g, rgb.b);
 
    World * world = new World(20, 20, 20);
 
+   Film * f = new Film();
+   Index * i1 = new FixedIndex(1.3);
+   Index * i2 = new FixedIndex(1.5);
+   f->addLayer(Layer(125.0, i1));
+   f->addLayer(Layer(250.0, i2));
+   f->addLayer(Layer(125.0, i1));
+
    world->light(s);
 
-   Object * o = new Sphere(Point(10,10,10), 3);
+   Sphere * o = new Sphere(Point(10,10,10), 3);
+   o->setFilm(f);
    o->addToWorld(world);
    
    o = new Sphere(Point(14, 15, 14), 2);

@@ -5,6 +5,7 @@
  */
 
 #include <math.h>
+#include <assert.h>
 
 #include "world.hpp"
 
@@ -133,9 +134,11 @@ sRGB World::trace(Ray * r) {
       ret.r = c;
       ret.g = c;
       ret.b = c;
-      Spectrum * r = near->reflect(lights.front(), theta);
-      ret = r->tosRGB();
-      delete r;
+      assert(lights.front());
+      Spectrum * s = near->reflect(lights.front(), theta);
+      assert(s != NULL);
+      ret = s->tosRGB();
+      delete s;
    }
    return ret;
 }

@@ -13,12 +13,12 @@
 
 class Index {
    public:
-      virtual double operator()(int wvl) = 0;
+      virtual double operator()(double wvl) = 0;
 };
 
 class FixedIndex : public Index {
    public:
-      virtual double operator()(int wvl) { return idx; }
+      virtual double operator()(double wvl) { return idx; }
       FixedIndex(double i) : idx(i) {}
    private:
       double idx;
@@ -37,9 +37,10 @@ class LayerMatrix {
 class Layer {
    public:
       double thickness; // in nm
-      Index & idx;
-      Layer(double t, Index & i) : thickness(t), idx(i) {}
-      LayerMatrix operator()(int wvl);
+      Index * idx;
+
+      Layer(double t, Index * i) : thickness(t), idx(i) {}
+      LayerMatrix operator()(const double wvl) const;
 };
 
 class Film {
@@ -47,10 +48,12 @@ class Film {
       Spectrum * transmit(Spectrum * in, double angle);
       Spectrum * reflect(Spectrum * in, double angle);
 
+      void addLayer(Layer l) {layers.push_back(l); }
+
    private:
       std::list<Layer> layers;
       // TODO: cache calculation results?
-      LayerMatrix matrix(double theta, int wvl);
+      LayerMatrix matrix(double theta, double wvl);
 };
 
 #endif

@@ -17,6 +17,8 @@
 
 #include <map>
 
+#include "approximation.hpp"
+
 // generic RGB triple
 struct sRGB {
    uint8_t r;
@@ -33,23 +35,43 @@ class Spectrum {
       // convert to sRGB color space
       virtual sRGB tosRGB();
 
-      Spectrum() { I[300] = 1.0; I[830] = 1.0; }
-      Spectrum(std::map<int, double> &i) : I(i) {}
+      Spectrum() { I.addPoint(300, 1.0); I.addPoint(830, 1.0); }
       Spectrum(Spectrum & s) : I(s.I) {}
       Spectrum(Spectrum * s) : I(s->I) {}
+
+      virtual ~Spectrum() {}
+
+      class const_iterator {
+         private:
+            double wvl;
+            const_iterator(double d) : wvl(d) {}
+            friend class Spectrum;
+
+         public:
+            const_iterator() : wvl(0.0) {}
+            double operator*() { return wvl; }
+            void operator++() { wvl += INC; }
+
+            bool operator!=(const_iterator o) { return wvl != o.wvl; }
+      };
+
+      const_iterator begin() { return const_iterator(I.min()); }
+      const_iterator end() { return const_iterator(I.max() + INC); }
 
    protected:
       // spectral power distribution
       //  for proper spectra, this will have many values at small increments
       //  for faster, less proper spectra, this could have a few values
       //   at wavelengths for R, G and B
-      std::map<int, double> I;
+      Approximation I;
+      const static double INC = 1.0;
 };
 
 // basic spectrum class for only white light
 class WhiteSpectrum : public Spectrum {
    public:
-      WhiteSpectrum() {};
+      WhiteSpectrum() {}
+      virtual ~WhiteSpectrum() {}
 
       virtual sRGB tosRGB() { 
          return sRGB((uint8_t)255, (uint8_t)255, (uint8_t)255);
@@ -79,6 +101,11 @@ class Observer {
       static f bar2(int wvl);
 
    private:
+      // TODO: replace the original implementation with proper Approximations
+/*      Approximation x;
+      Approximation y;
+      Approximation z;
+      */
       std::map<int, f> func;
 };
 
