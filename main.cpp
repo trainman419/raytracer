@@ -48,9 +48,9 @@ int main( int argc, char ** argv) {
    Film * f = new Film();
    Index * i1 = new FixedIndex(1.3);
    Index * i2 = new FixedIndex(1.5);
-   f->addLayer(Layer(125.0, i1));
-   f->addLayer(Layer(250.0, i2));
-   f->addLayer(Layer(125.0, i1));
+   f->addLayer(Layer(50.0, i1));
+   f->addLayer(Layer(100.0, i2));
+   f->addLayer(Layer(50.0, i1));
 
    world->light(s);
 
