@@ -30,6 +30,7 @@ LayerMatrix Layer::operator()(const double wvl) const {
 }
 
 // caching per-wavelength/angle transfer matrices doesn't seem to help
+//  caching resulting refelction value might, after we compute it
 //#define OPTIMIZE
 
 #ifdef OPTIMIZE
