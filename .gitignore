@@ -4,3 +4,8 @@ all
 out.png
 spike
 spike.dSYM
+model
+model.dSYM
+testdata
+test.png
+test.plot

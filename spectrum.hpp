@@ -59,6 +59,8 @@ class Spectrum {
       const_iterator begin() { return const_iterator(I.min()); }
       const_iterator end() { return const_iterator(I.max() + INC); }
 
+      inline double get(double wvl) { return I(wvl); } 
+
    protected:
       // spectral power distribution
       //  for proper spectra, this will have many values at small increments
