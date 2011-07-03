@@ -2,3 +2,5 @@ main
 *.o
 all
 out.png
+spike
+spike.dSYM
