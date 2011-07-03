@@ -29,13 +29,34 @@ LayerMatrix Layer::operator()(const double wvl) const {
                        -k*sin(k*L), cos(k*L)      );
 }
 
+// caching per-wavelength/angle transfer matrices doesn't seem to help
+//#define OPTIMIZE
+
+#ifdef OPTIMIZE
+map<double, map<double, LayerMatrix> * > layerCache;
+#endif
+
 LayerMatrix Film::matrix(double theta, double wvl) {
    LayerMatrix ret(0, 0, 0, 0);
+#ifdef OPTIMIZE
+   map<double, LayerMatrix> * cache = layerCache[theta];
+   if( cache == NULL ) {
+      cache = new map<double, LayerMatrix>();
+      layerCache[theta] = cache;
+   }
+   map<double, LayerMatrix>::const_iterator c_itr;
+   if( (c_itr = cache->find(wvl)) != cache->end() ) {
+      return c_itr->second;
+   }
+#endif
    list<Layer>::const_iterator itr = layers.begin();
    ret = (*itr)(wvl);
    for( itr++; itr != layers.end(); itr++ ) {
       ret = (*itr)(wvl) * ret;
    }
+#ifdef OPTIMIZE
+   cache->insert(map<double, LayerMatrix>::value_type(wvl, ret));
+#endif
    return ret;
 }
 
