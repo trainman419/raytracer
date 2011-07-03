@@ -8,6 +8,7 @@
 
 #include "optics.hpp"
 #include <math.h>
+#include <complex>
 
 using namespace std;
 
@@ -30,6 +31,8 @@ LayerMatrix Layer::operator()(const double wvl) const {
 }
 
 // caching per-wavelength/angle transfer matrices doesn't seem to help
+// optimization off: ~7.9s
+// optimization on:  ~9.4s
 //  caching resulting refelction value might, after we compute it
 //#define OPTIMIZE
 
@@ -38,7 +41,7 @@ map<double, map<double, LayerMatrix> * > layerCache;
 #endif
 
 LayerMatrix Film::matrix(double theta, double wvl) {
-   LayerMatrix ret(0, 0, 0, 0);
+   LayerMatrix ret(1, 0, 0, 1);
 #ifdef OPTIMIZE
    map<double, LayerMatrix> * cache = layerCache[theta];
    if( cache == NULL ) {
@@ -71,6 +74,21 @@ Spectrum * Film::transmit(Spectrum * in, double angle) {
 }
 
 Spectrum * Film::reflect(Spectrum * in, double angle) {
-   Spectrum * ret = new Spectrum(in);
+   Approximation I;
+   Spectrum::const_iterator itr;
+   for( itr = in->begin(); itr != in->end(); ++itr ) {
+      // indicies of incident and subsrate materials
+      double kL = 1.0;
+      double kR = 1.0;
+      LayerMatrix m = matrix(angle, *itr);
+      complex<double> r = 
+         complex<double>( m.m21 + kL*kR*m.m12, kL*m.m22 - kR*m.m11) / 
+         complex<double>(-m.m21 + kL*kR*m.m12, kL*m.m22 + kR*m.m11);
+      double R = r.real()*r.real() + r.imag()*r.imag();
+
+      // TODO: fix so it doesn't ignore input spectrum
+      I.addPoint(*itr, R);
+   }
+   Spectrum * ret = new Spectrum(I);
    return ret;
 }

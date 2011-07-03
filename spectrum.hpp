@@ -38,6 +38,7 @@ class Spectrum {
       Spectrum() { I.addPoint(300, 1.0); I.addPoint(830, 1.0); }
       Spectrum(Spectrum & s) : I(s.I) {}
       Spectrum(Spectrum * s) : I(s->I) {}
+      Spectrum(Approximation & i) : I(i) {}
 
       virtual ~Spectrum() {}
 
