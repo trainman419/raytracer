@@ -19,8 +19,8 @@ class Approximation {
       double max() const { return f.rbegin()->first; }
       void addPoint(double x, double y) { f[x] = y; }
       Approximation() {};
-      Approximation(Approximation & a) : f(a.f) {}
-      Approximation(Approximation * a) : f(a->f) {}
+      Approximation(const Approximation & a) : f(a.f) {}
+      Approximation(const Approximation * a) : f(a->f) {}
    private:
       std::map<double, double> f; // data points in this approximation
 };

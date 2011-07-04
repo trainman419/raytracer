@@ -40,20 +40,21 @@ class Layer {
       Index * idx;
 
       Layer(double t, Index * i) : thickness(t), idx(i) {}
-      LayerMatrix operator()(const double wvl) const;
+      LayerMatrix operator()(const double theta, const double wvl) const;
 };
 
 class Film {
    public:
-      Spectrum * transmit(Spectrum * in, double angle);
-      Spectrum * reflect(Spectrum * in, double angle);
+      Spectrum * transmit(const Spectrum * in, const double angle) const;
+      Spectrum * reflect(const Spectrum * in, const double angle) const;
 
       void addLayer(Layer l) {layers.push_back(l); }
 
+      void print() const;
    private:
       std::list<Layer> layers;
       // TODO: cache calculation results?
-      LayerMatrix matrix(double theta, double wvl);
+      LayerMatrix matrix(const double theta, const double wvl) const;
 };
 
 #endif

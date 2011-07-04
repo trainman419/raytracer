@@ -10,9 +10,13 @@
 #include <math.h>
 #include <complex>
 
+#include <assert.h>
+#include <stdio.h>
+
 using namespace std;
 
-#define NM_TO_M(a) (a / 1000000000.0)
+//#define NM_TO_M(a) (a / 1000000000.0)
+#define NM_TO_M(a) (a)
 
 LayerMatrix LayerMatrix::operator*(const LayerMatrix o) const {
    return LayerMatrix(m11*o.m11 + m12*o.m21,
@@ -22,10 +26,12 @@ LayerMatrix LayerMatrix::operator*(const LayerMatrix o) const {
 }
 
 // wavelength in nm
-LayerMatrix Layer::operator()(const double wvl) const {
+LayerMatrix Layer::operator()(const double theta, const double wvl) const {
    double k = 2 * M_PI / (NM_TO_M(wvl)/(*idx)(wvl));
    // TODO: adjust thickness for angle of incidence and index?
    double L = NM_TO_M(thickness);
+   double sigma = 2 * M_PI * NM_TO_M(thickness) * (*idx)(wvl) / NM_TO_M(wvl);
+   assert(fabs(L*k - sigma) < 0.00000000000001);
    return LayerMatrix( cos(k*L)   , sin(k*L) / k,
                        -k*sin(k*L), cos(k*L)      );
 }
@@ -34,37 +40,19 @@ LayerMatrix Layer::operator()(const double wvl) const {
 // optimization off: ~7.9s
 // optimization on:  ~9.4s
 //  caching resulting refelction value might, after we compute it
-//#define OPTIMIZE
 
-#ifdef OPTIMIZE
-map<double, map<double, LayerMatrix> * > layerCache;
-#endif
-
-LayerMatrix Film::matrix(double theta, double wvl) {
+LayerMatrix Film::matrix(const double theta, const double wvl) const {
    LayerMatrix ret(1, 0, 0, 1);
-#ifdef OPTIMIZE
-   map<double, LayerMatrix> * cache = layerCache[theta];
-   if( cache == NULL ) {
-      cache = new map<double, LayerMatrix>();
-      layerCache[theta] = cache;
-   }
-   map<double, LayerMatrix>::const_iterator c_itr;
-   if( (c_itr = cache->find(wvl)) != cache->end() ) {
-      return c_itr->second;
-   }
-#endif
    list<Layer>::const_iterator itr = layers.begin();
-   ret = (*itr)(wvl);
+   ret = (*itr)(theta, wvl);
    for( itr++; itr != layers.end(); itr++ ) {
-      ret = (*itr)(wvl) * ret;
+      //ret = (*itr)(wvl) * ret;
+      ret = ret * (*itr)(theta, wvl);
    }
-#ifdef OPTIMIZE
-   cache->insert(map<double, LayerMatrix>::value_type(wvl, ret));
-#endif
    return ret;
 }
 
-Spectrum * Film::transmit(Spectrum * in, double angle) {
+Spectrum * Film::transmit(const Spectrum * in, const double angle) const {
    Spectrum * ret = new Spectrum(in);
    Spectrum::const_iterator itr;
    for( itr = in->begin(); itr != in->end(); ++itr ) {
@@ -73,9 +61,11 @@ Spectrum * Film::transmit(Spectrum * in, double angle) {
    return ret;
 }
 
-Spectrum * Film::reflect(Spectrum * in, double angle) {
+Spectrum * Film::reflect(const Spectrum * in, const double angle) const {
    Approximation I;
    Spectrum::const_iterator itr;
+
+   //fprintf(stderr, "%d layers\n", layers.size());
    for( itr = in->begin(); itr != in->end(); ++itr ) {
       // indicies of incident and subsrate materials
       double kL = 1.0;
@@ -87,8 +77,20 @@ Spectrum * Film::reflect(Spectrum * in, double angle) {
       double R = r.real()*r.real() + r.imag()*r.imag();
 
       // TODO: fix so it doesn't ignore input spectrum
-      I.addPoint(*itr, R);
+      I.addPoint(*itr, R * in->get(*itr));
+      //I.addPoint(*itr, m.m11);
+      // m11 varies with thickness and wavelength
+      // m12 is zero
+      // m21 varies with thickness and wavelength (decreasing envelope)
+      // m22 varies like m11
    }
    Spectrum * ret = new Spectrum(I);
    return ret;
+}
+
+void Film::print() const {
+   list<Layer>::const_iterator itr;
+   for( itr = layers.begin(); itr != layers.end(); itr++ ) {
+      printf("%09lf %03lf\n", itr->thickness, (*(itr->idx))(500));
+   }
 }

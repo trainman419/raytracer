@@ -36,9 +36,9 @@ class Spectrum {
       virtual sRGB tosRGB();
 
       Spectrum() { I.addPoint(300, 1.0); I.addPoint(830, 1.0); }
-      Spectrum(Spectrum & s) : I(s.I) {}
-      Spectrum(Spectrum * s) : I(s->I) {}
-      Spectrum(Approximation & i) : I(i) {}
+      Spectrum(const Spectrum & s) : I(s.I) {}
+      Spectrum(const Spectrum * s) : I(s->I) {}
+      Spectrum(const Approximation & i) : I(i) {}
 
       virtual ~Spectrum() {}
 
@@ -56,10 +56,10 @@ class Spectrum {
             bool operator!=(const_iterator o) { return wvl != o.wvl; }
       };
 
-      const_iterator begin() { return const_iterator(I.min()); }
-      const_iterator end() { return const_iterator(I.max() + INC); }
+      const_iterator begin() const { return const_iterator(I.min()); }
+      const_iterator end() const { return const_iterator(I.max() + INC); }
 
-      inline double get(double wvl) { return I(wvl); } 
+      inline double get(const double wvl) const { return I(wvl); } 
 
    protected:
       // spectral power distribution

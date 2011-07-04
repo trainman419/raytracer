@@ -7,7 +7,7 @@ echo "set title 'Test filter responses'" > test.plot
 
 plot=false
 
-for (( i=50; i<200; i++ ))
+for (( i=500; i<501; i+=200 ))
 do
    ./model $i > testdata/$i.dat
    if $plot
@@ -19,7 +19,7 @@ do
    fi
 done
 
-echo "set terminal png size 1024,1024" >> test.plot
+echo "set terminal png size 800,800" >> test.plot
 echo "set output 'test.png'" >> test.plot
 echo "replot" >> test.plot
 

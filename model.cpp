@@ -7,7 +7,11 @@
 #include "optics.hpp"
 #include "source.hpp"
 
+#include <math.h>
 #include <stdio.h>
+
+//#define f(a) log(-log(a))
+#define f(a) (a)
 
 int main(int argc, char ** argv) {
    Film * film = new Film();
@@ -22,16 +26,27 @@ int main(int argc, char ** argv) {
       return -1;
    }
 
-   film->addLayer(Layer(thick, i1));
-   film->addLayer(Layer(thick*2, i2));
-   film->addLayer(Layer(thick, i1));
+   /*
+   for( int i=0; i<10; i++ ) {
+      double q = 1.0 + ((i-5.0)/10.0);
+      q /= 4.0;
+      fprintf(stderr, "%05.3lf %03.0lf\n", q, thick);
+      film->addLayer(Layer(q*thick/1.5, i1));
+      film->addLayer(Layer(q*2*thick/2.2, i2));
+      film->addLayer(Layer(q*thick/1.5, i1));
+   }
+   */
+   film->addLayer(Layer(thick/2/2.2, i2));
+
+   //film->print();
+   //return 0;
 
    Spectrum * s;
-   s = film->reflect(new WhiteSpectrum(), 0);
-//   s = new FileSource("color/illuminants/CIE-A.txt");
+   s = new FileSource("color/illuminants/CIE-C.txt");
+   s = film->reflect(s, 0);
    Spectrum::const_iterator itr;
    for( itr = s->begin(); itr != s->end(); ++itr ) {
-      printf("%06lf %06lf\n", *itr, s->get(*itr));
+      printf("%09lf %09lf\n", *itr, f(s->get(*itr)));
    }
 
    sRGB color = s->tosRGB();

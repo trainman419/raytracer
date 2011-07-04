@@ -41,16 +41,18 @@ int main( int argc, char ** argv) {
    //Source * s = new WhiteSource();
 
    sRGB rgb = s->tosRGB();
-   printf("D65->RGB %d %d %d\n", rgb.r, rgb.g, rgb.b);
+   printf("->RGB %d %d %d\n", rgb.r, rgb.g, rgb.b);
 
    World * world = new World(20, 20, 20);
 
    Film * f = new Film();
    Index * i1 = new FixedIndex(1.3);
    Index * i2 = new FixedIndex(1.5);
-   f->addLayer(Layer(50.0, i1));
+/*   f->addLayer(Layer(50.0, i1));
    f->addLayer(Layer(100.0, i2));
    f->addLayer(Layer(50.0, i1));
+   */
+   f->addLayer(Layer(250/1.5, i2));
 
    world->light(s);
 
