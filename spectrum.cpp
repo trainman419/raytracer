@@ -47,6 +47,7 @@ sRGB Spectrum::tosRGB() {
       } else {
          C[i] = 12.92*C[i];
       }
+      if( C[i] < 0 ) C[i] = 0.0;
    }
 
    return sRGB(C[0]*255, C[1]*255, C[2]*255);
