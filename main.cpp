@@ -53,6 +53,7 @@ int main( int argc, char ** argv) {
    f->addLayer(Layer(50.0, i1));
    */
    f->addLayer(Layer(250/1.5, i2));
+   f = new FakeFilm();
 
    world->light(s);
 
@@ -69,7 +70,7 @@ int main( int argc, char ** argv) {
    FILE * out = fopen("out.png", "wb");
 
    // width, height and image buffer
-   int w = 200; // do not make this 10
+   int w = 500; // do not make this 10
    int h = w;
    char * image = (char*)malloc(sizeof(char)*w*h*3);
    if( !image ) {

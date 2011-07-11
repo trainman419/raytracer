@@ -36,7 +36,13 @@ int main(int argc, char ** argv) {
       film->addLayer(Layer(q*thick/1.5, i1));
    }
    */
+
+   /*
+   film->addLayer(Layer(thick/2/1.5, i1));
    film->addLayer(Layer(thick/2/2.2, i2));
+   film->addLayer(Layer(thick/2/1.5, i1));
+   */
+   film = new FakeFilm();
 
    //film->print();
    //return 0;
