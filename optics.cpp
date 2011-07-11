@@ -94,3 +94,28 @@ void Film::print() const {
       printf("%09lf %03lf\n", itr->thickness, (*(itr->idx))(500));
    }
 }
+
+Spectrum * FakeFilm::reflect(const Spectrum * in, const double theta) const {
+   Approximation I;
+   Spectrum::const_iterator itr;
+   for( itr = in->begin(); itr != in->end(); ++itr ) {
+      double f = 0.0;
+
+      // blue
+      //if( *itr < 480 && *itr > 420 ) f = 1.0; // black/brown???
+
+      // green
+      //if( *itr < 590 && *itr > 520 ) f = 1.0; // red???
+
+      // red
+      //if( *itr < 700 && *itr > 660 ) f = 1.0; // purple???
+
+      // on angle
+      double low = 380 + 400*cos(theta);
+      double high = 420 + 400*cos(theta);
+      if( *itr < high && *itr > low ) f = 1.0;
+
+      I.addPoint(*itr, f * in->get(*itr));
+   }
+   return new Spectrum(I);
+}

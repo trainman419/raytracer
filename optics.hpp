@@ -45,8 +45,8 @@ class Layer {
 
 class Film {
    public:
-      Spectrum * transmit(const Spectrum * in, const double angle) const;
-      Spectrum * reflect(const Spectrum * in, const double angle) const;
+      virtual Spectrum *transmit(const Spectrum *in, const double angle) const;
+      virtual Spectrum *reflect(const Spectrum *in, const double angle) const;
 
       void addLayer(Layer l) {layers.push_back(l); }
 
@@ -55,6 +55,11 @@ class Film {
       std::list<Layer> layers;
       // TODO: cache calculation results?
       LayerMatrix matrix(const double theta, const double wvl) const;
+};
+
+class FakeFilm : public Film {
+   public:
+      virtual Spectrum *reflect(const Spectrum *in, const double angle) const;
 };
 
 #endif
