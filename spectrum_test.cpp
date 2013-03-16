@@ -38,7 +38,9 @@
 
 int main( int argc, char ** argv) {
    // width, height and image buffer
-   int w = 500; // do not make this 10
+   int low = 380;
+   int high = 780;
+   int w = high - low;
    int h = 50;
    char * image = (char*)malloc(sizeof(char)*w*h*3);
    if( !image ) {
@@ -51,10 +53,10 @@ int main( int argc, char ** argv) {
    for( int x=0; x<w; x++ ) {
       Approximation a;
       a.addPoint(0.0, 0.0);
-      a.addPoint(289 + x, 0.0);
-      a.addPoint(290 + x, 1.0);
-      a.addPoint(310 + x, 1.0);
-      a.addPoint(311 + x, 0.0);
+      a.addPoint(low - 11 + x, 0.0);
+      a.addPoint(low - 10 + x, 1.0);
+      a.addPoint(low + 10 + x, 1.0);
+      a.addPoint(low + 11 + x, 0.0);
       a.addPoint(1000, 0.0);
       Spectrum s(a);
       fRGB rgb = s.tofRGB();
