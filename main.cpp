@@ -40,19 +40,23 @@ int main( int argc, char ** argv) {
    //Source * s = new FileSource("color/illuminants/CIE-A-1nm.txt");
    //Source * s = new WhiteSource();
 
-   sRGB rgb = s->tosRGB();
-   printf("->RGB %d %d %d\n", rgb.r, rgb.g, rgb.b);
+   fRGB rgb = s->tofRGB();
+   fRGB rgbmax(0.0, 0.0, 0.0);
+   printf("->RGB %f %f %f\n", rgb.r, rgb.g, rgb.b);
 
    World * world = new World(20, 20, 20);
 
    Film * f = new Film();
    Index * i1 = new FixedIndex(1.3);
    Index * i2 = new FixedIndex(1.5);
-/*   f->addLayer(Layer(50.0, i1));
+   /*
+   f->addLayer(Layer(50.0, i1));
    f->addLayer(Layer(100.0, i2));
    f->addLayer(Layer(50.0, i1));
    */
+   /*
    f->addLayer(Layer(250/1.5, i2));
+   */
    f = new FakeFilm();
 
    world->light(s);
@@ -70,14 +74,17 @@ int main( int argc, char ** argv) {
    FILE * out = fopen("out.png", "wb");
 
    // width, height and image buffer
-   int w = 500; // do not make this 10
+   int w = 100; // do not make this 10
+   if( argc > 1 ) sscanf(argv[1], "%d", &w);
    int h = w;
+   fRGB * f_image = (fRGB*)malloc(sizeof(fRGB)*w*h);
    char * image = (char*)malloc(sizeof(char)*w*h*3);
-   if( !image ) {
+   if( !image || !f_image ) {
       perror("malloc failed");
       return -1;
    }
    for( int y=0; y<h; y++ ) {
+      printf("Rendering row %d\n", y);
       for( int x=0; x<w; x++ ) {
          //printf("Rendering (%d, %d)\n", x, y);
          // generate ray to cast
@@ -86,12 +93,19 @@ int main( int argc, char ** argv) {
 
          // cast ray and get rendered value
          rgb = world->trace(&r);
+         rgbmax = max(rgbmax, rgb);
+         f_image[y*w + x] = rgb;
+      }
+   }
 
+   for( int y=0; y<h; y++ ) {
+      for( int x=0; x<w; x++ ) {
+         rgb = f_image[y*w + x];
          // place RGB value into output image
          int k = (y*w + x)*3;
-         image[k + 0] = rgb.r; // R
-         image[k + 1] = rgb.g; // G
-         image[k + 2] = rgb.b; // B
+         image[k + 0] = 255 * (rgb.r / rgbmax.r); // R
+         image[k + 1] = 255 * (rgb.g / rgbmax.g); // G
+         image[k + 2] = 255 * (rgb.b / rgbmax.b); // B
       }
    }
 

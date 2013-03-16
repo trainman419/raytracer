@@ -53,7 +53,7 @@ void World::light(Source * s) {
    lights.push_back(s);
 }
 
-sRGB World::trace(Ray * r) {
+fRGB World::trace(Ray * r) {
    // trace a ray through the world
    int sx, sy, sz;
    Point start = r->getStart();
@@ -115,7 +115,7 @@ sRGB World::trace(Ray * r) {
          sz = (start.z + u.z*t);
       }
    }
-   sRGB ret(0, 0, 0);
+   fRGB ret(0, 0, 0);
    if( near != NULL ) {
       Point intersect(start.x + u.x*dist, 
                       start.y + u.y*dist, 
@@ -137,7 +137,7 @@ sRGB World::trace(Ray * r) {
       assert(lights.front());
       Spectrum * s = near->reflect(lights.front(), theta);
       assert(s != NULL);
-      ret = s->tosRGB();
+      ret = s->tofRGB();
       delete s;
    }
    return ret;

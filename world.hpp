@@ -21,7 +21,7 @@ class World {
    public:
       // get objects in ( [x, x+1), [y, y+1), [z, z+1) )
       // ( between x and the next-highest int )
-      std::list<Object*> * getObjects(int x, int y, int x);
+      std::list<Object*> * getObjects(int x, int y, int z);
 
       World(int dx, int dy, int dz);
       ~World();
@@ -32,7 +32,7 @@ class World {
       double min_light;
 
       // trace a ray through the world
-      sRGB trace(Ray *);
+      fRGB trace(Ray *);
       // minimum percentage a ray must have to propagate
       double min_ray;
 

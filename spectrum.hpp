@@ -29,11 +29,22 @@ struct sRGB {
    sRGB(uint8_t rr, uint8_t gg, uint8_t bb) : r(rr), g(gg), b(bb) {}
 };
 
+struct fRGB {
+  double r;
+  double g;
+  double b;
+
+  fRGB(double rr, double gg, double bb) : r(rr), g(gg), b(bb) {}
+};
+
+fRGB max(const fRGB & a, const fRGB & b);
+
 // base spectrum class
 class Spectrum {
    public:
       // convert to sRGB color space
       virtual sRGB tosRGB();
+      virtual fRGB tofRGB();
 
       Spectrum() { I.addPoint(300, 1.0); I.addPoint(830, 1.0); }
       Spectrum(const Spectrum & s) : I(s.I) {}
@@ -67,7 +78,7 @@ class Spectrum {
       //  for faster, less proper spectra, this could have a few values
       //   at wavelengths for R, G and B
       Approximation I;
-      const static double INC = 1.0;
+      static double INC;
 };
 
 // basic spectrum class for only white light

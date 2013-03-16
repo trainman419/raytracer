@@ -15,7 +15,14 @@
 
 using namespace std;
 
-sRGB Spectrum::tosRGB() {
+fRGB max(const fRGB & a, const fRGB & b) {
+  return fRGB(max(a.r, b.r), max(a.g, b.g), max(a.b, b.b));
+}
+
+
+double Spectrum::INC = 1.0;
+
+fRGB Spectrum::tofRGB() {
    double itr;
    double X = 0.0;
    double Y = 0.0;
@@ -28,12 +35,14 @@ sRGB Spectrum::tosRGB() {
    }
 
    // if any values greater than 1.0, normalize
+   /*
    if( X > 1.0 || Y > 1.0 || Z > 1.0 ) {
       double norm = max( X, max(Y, Z));
       X /= norm;
       Y /= norm;
       Z /= norm;
    }
+   */
 
    // conversion from CIE XYZ to sRGB
    double C[3];
@@ -50,7 +59,14 @@ sRGB Spectrum::tosRGB() {
       if( C[i] < 0 ) C[i] = 0.0;
    }
 
-   return sRGB(C[0]*255, C[1]*255, C[2]*255);
+   return fRGB(C[0], C[1], C[2]);
+}
+
+sRGB Spectrum::tosRGB() {
+  // normalize fRGB
+  fRGB f = tofRGB();
+  double m = max(f.r, max( f.g, f.b ));
+  return sRGB( 255 * (f.r / m), 255 * (f.g / m), 255 * (f.b / m));
 }
 
 // Observer helper class
@@ -76,7 +92,9 @@ Observer::Observer() {
       in >> line.y; 
       in >> line.z;
 #ifdef DEBUG
-      cout << "wvl: " << wvl << " " << line.x << endl;
+      printf("wvl: %d: %.4f, %.4f, %.4f\n", wvl, line.x, line.y, line.z);
+      /*cout << "wvl: " << wvl << ": " << line.x << ", " << line.y <<
+        ", " << line.z << endl;*/
 #endif
       func[wvl] = line;
    }
